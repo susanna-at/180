@@ -24,7 +24,10 @@ GIF_OUT = MEDIA / "dolly_zoom.gif"
 
 MAX_PHOTO_PX = 1600   # longest side for still photos
 GIF_PX = 640          # longest side for GIF frames
-FRAME_MS = 350        # time per GIF frame (short sequences)
+FRAME_MS = 150        # time per GIF frame
+# Only use dolly stills whose name (without extension) falls in this range.
+# Set to None to use every image in the dolly folder.
+DOLLY_RANGE = ("IMG_5643", "IMG_5664")
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
@@ -66,6 +69,7 @@ def build_gif():
     frames_src = sorted(
         p for p in DOLLY.iterdir()
         if p.suffix.lower() in IMG_EXT and not p.name.startswith(".")
+        and (DOLLY_RANGE is None or DOLLY_RANGE[0] <= p.stem <= DOLLY_RANGE[1])
     )
     if not frames_src:
         print(f"  no images in {DOLLY} yet; skipping GIF")
@@ -79,14 +83,9 @@ def build_gif():
     w = min(f.size[0] for f in frames)
     h = min(f.size[1] for f in frames)
     frames = [ImageOps.fit(f, (w, h), Image.LANCZOS) for f in frames]
-    n = len(frames)
-    if n <= 12:
-        # short sequence: play forward then backward so the loop is smooth
-        seq = frames + frames[-2:0:-1]
-        ms = FRAME_MS
-    else:
-        seq = frames
-        ms = 100
+    # play forward then backward so the loop is smooth
+    seq = frames + frames[-2:0:-1]
+    ms = FRAME_MS
     seq = [f.quantize(colors=128, method=Image.Quantize.MEDIANCUT) for f in seq]
     seq[0].save(
         GIF_OUT, save_all=True, append_images=seq[1:],
