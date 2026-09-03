@@ -23,8 +23,8 @@ DOLLY = MEDIA / "dolly"
 GIF_OUT = MEDIA / "dolly_zoom.gif"
 
 MAX_PHOTO_PX = 1600   # longest side for still photos
-GIF_PX = 900          # longest side for GIF frames
-FRAME_MS = 350        # time per GIF frame
+GIF_PX = 640          # longest side for GIF frames
+FRAME_MS = 350        # time per GIF frame (short sequences)
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
@@ -79,11 +79,18 @@ def build_gif():
     w = min(f.size[0] for f in frames)
     h = min(f.size[1] for f in frames)
     frames = [ImageOps.fit(f, (w, h), Image.LANCZOS) for f in frames]
-    # play forward then backward so the loop is smooth
-    seq = frames + frames[-2:0:-1]
+    n = len(frames)
+    if n <= 12:
+        # short sequence: play forward then backward so the loop is smooth
+        seq = frames + frames[-2:0:-1]
+        ms = FRAME_MS
+    else:
+        seq = frames
+        ms = 100
+    seq = [f.quantize(colors=128, method=Image.Quantize.MEDIANCUT) for f in seq]
     seq[0].save(
         GIF_OUT, save_all=True, append_images=seq[1:],
-        duration=FRAME_MS, loop=0, optimize=True,
+        duration=ms, loop=0, optimize=True,
     )
     print(f"  wrote {GIF_OUT.name}: {len(frames_src)} stills, {w}x{h}, "
           f"{GIF_OUT.stat().st_size/1e6:.1f} MB")

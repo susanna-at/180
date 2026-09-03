@@ -2,3 +2,5 @@
 __pycache__/
 *.HEIC
 *.heic
+0/media/dolly/*
+!0/media/dolly/.gitkeep

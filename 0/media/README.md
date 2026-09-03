@@ -9,8 +9,6 @@ Part 1 - Selfie
 Part 2 - Architecture
   building_zoom_1.jpg  far away + zoomed in    (pair 1)
   building_close_1.jpg walked up, no zoom      (pair 1)
-  building_zoom_2.jpg  far away + zoomed in    (pair 2)
-  building_close_2.jpg walked up, no zoom      (pair 2)
 
 Part 3 - Dolly zoom
   dolly/               put ALL the stills in here. They are ordered by filename,
