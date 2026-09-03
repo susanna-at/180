@@ -74,3 +74,12 @@ ul.projects .n {
 ul.projects li.soon { color: #b5b2bd; font-weight: 500; }
 ul.projects li.soon .n { background: #ddd; }
 ul.projects li.soon:hover { transform: none; }
+
+figure.strip { margin-top: 20px; }
+figure.strip img { aspect-ratio: auto; }
+
+@media print {
+  body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  section { break-inside: avoid; }
+  figure, .pair, .gif { break-inside: avoid; }
+}

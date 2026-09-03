@@ -21,6 +21,8 @@ ROOT = Path(__file__).resolve().parent
 MEDIA = ROOT / "media"
 DOLLY = MEDIA / "dolly"
 GIF_OUT = MEDIA / "dolly_zoom.gif"
+STRIP_OUT = MEDIA / "dolly_strip.jpg"
+STRIP_FRAMES = 6      # key frames shown as a still filmstrip (for the PDF)
 
 MAX_PHOTO_PX = 1600   # longest side for still photos
 GIF_PX = 440          # longest side for GIF frames
@@ -111,6 +113,16 @@ def build_gif():
         GIF_OUT, save_all=True, append_images=seq[1:],
         duration=durs, loop=0, optimize=True,
     )
+    # still filmstrip of the longest take, for the printed PDF
+    best = max(takes, key=len)
+    idx = [round(i * (len(best) - 1) / (STRIP_FRAMES - 1)) for i in range(STRIP_FRAMES)]
+    tiles = [ImageOps.fit(best[i], (w, h), Image.LANCZOS) for i in idx]
+    gap = 6
+    strip = Image.new("RGB", (w * len(tiles) + gap * (len(tiles) - 1), h), "white")
+    for k, t in enumerate(tiles):
+        strip.paste(t, (k * (w + gap), 0))
+    strip.save(STRIP_OUT, "JPEG", quality=88)
+    print(f"  wrote {STRIP_OUT.name}: {len(tiles)} frames")
     n = sum(len(t) for t in takes)
     print(f"  wrote {GIF_OUT.name}: {len(takes)} takes, {n} stills, {len(seq)} frames, "
           f"{w}x{h}, {GIF_OUT.stat().st_size/1e6:.1f} MB")
