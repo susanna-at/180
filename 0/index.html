@@ -3,115 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project 0 · Becoming Friends with Your Camera</title>
+  <title>Project 0 — Becoming Friends with Your Camera</title>
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap">
-      <svg class="doodle" viewBox="0 0 64 64" fill="none"><rect x="6" y="18" width="52" height="36" rx="6" fill="#2457d6"/><path d="M22 18l4-8h12l4 8z" fill="#2457d6"/><circle cx="32" cy="36" r="11" fill="#fafaf7"/><circle cx="32" cy="36" r="5" fill="#2457d6"/></svg>
-      <p class="eyebrow"><a href="../index.html">CS180</a> · Project 0</p>
-      <h1>Becoming Friends with Your Camera</h1>
-      <p class="lede">Three small experiments on how perspective depends on where the camera is, not on how much it zooms.</p>
-      <p class="meta">Susanna Atanessian · Fall 2026</p>
-    </div>
-  </header>
-
   <div class="wrap">
-    <nav class="toc">
-      <a href="#part1">1 · Selfie</a>
-      <a href="#part2">2 · Architecture</a>
-      <a href="#part3">3 · Dolly Zoom</a>
-    </nav>
+    <div class="top">
+      <a href="../">Susanna Atanessian</a>
+      <span>CS180, Project 0</span>
+    </div>
+
+    <h1>Becoming Friends with Your Camera</h1>
+    <p class="sub">Perspective, focal length, and where the camera stands.</p>
+
+    <h2>1. Selfie</h2>
+    <p class="small">Close up without zoom, then from several feet back with zoom, keeping the face the same size.</p>
+    <div class="pair">
+      <figure><img src="./media/selfie_close_1.jpg" alt=""><figcaption>Close, no zoom</figcaption></figure>
+      <figure><img src="./media/selfie_far_1.jpg" alt=""><figcaption>Far, zoomed in</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="./media/selfie_close_2.jpg" alt=""><figcaption>Close, no zoom</figcaption></figure>
+      <figure><img src="./media/selfie_far_2.jpg" alt=""><figcaption>Far, zoomed in</figcaption></figure>
+    </div>
+    <p>Up close, the nose is much nearer to the lens than the ears, so it projects larger. Stepping back evens out those distances, and zooming only scales the image.</p>
+
+    <h2>2. Architecture</h2>
+    <p class="small">Far away with zoom, then walked up without zoom, keeping the building the same size.</p>
+    <div class="pair">
+      <figure class="wide"><img src="./media/building_zoom_1.jpg" alt=""><figcaption>Far, zoomed in</figcaption></figure>
+      <figure class="wide"><img src="./media/building_close_1.jpg" alt=""><figcaption>Close, no zoom</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure class="wide"><img src="./media/building_zoom_2.jpg" alt=""><figcaption>Far, zoomed in</figcaption></figure>
+      <figure class="wide"><img src="./media/building_close_2.jpg" alt=""><figcaption>Close, no zoom</figcaption></figure>
+    </div>
+    <p>From far away, near and far parts of the scene are at nearly the same distance, so depth flattens. Up close, the ratio of those distances is large and the scene looks deep.</p>
+
+    <h2>3. Dolly zoom</h2>
+    <p class="small">Moving the camera back while zooming in, so the subject stays the same size and the background stretches.</p>
+    <div class="gif"><img src="./media/dolly_zoom.gif" alt=""></div>
   </div>
-
-  <section id="part1">
-    <div class="wrap">
-      <div class="panel pink">
-      <div class="sec-head"><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="26" fill="#d8452e"/><circle cx="23" cy="27" r="3" fill="#fafaf7"/><circle cx="41" cy="27" r="3" fill="#fafaf7"/><path d="M22 40q10 8 20 0" stroke="#fafaf7" stroke-width="3" stroke-linecap="round"/></svg><h2><span class="num">01</span>Selfie: The Wrong Way vs. The Right Way</h2></div>
-      <p class="sub">A portrait taken from close up, next to the same portrait taken from several feet back with the camera zoomed in so the face is the same size.</p>
-
-      <div class="pair">
-        <figure>
-          <img src="./media/selfie_close_1.jpg" alt="Close-up portrait, no zoom">
-          <figcaption><strong>Close up, no zoom</strong>The nose is nearest the lens, so it is magnified relative to the ears.</figcaption>
-        </figure>
-        <figure>
-          <img src="./media/selfie_far_1.jpg" alt="Portrait from far away, zoomed in">
-          <figcaption><strong>Stepped back, zoomed in</strong>All parts of the face are roughly the same distance away, so proportions look natural.</figcaption>
-        </figure>
-      </div>
-
-      <div class="pair">
-        <figure>
-          <img src="./media/selfie_close_2.jpg" alt="Second close-up portrait, no zoom">
-          <figcaption><strong>Close up, no zoom</strong>Second subject, same distortion.</figcaption>
-        </figure>
-        <figure>
-          <img src="./media/selfie_far_2.jpg" alt="Second portrait from far away, zoomed in">
-          <figcaption><strong>Stepped back, zoomed in</strong>Flatter, more flattering.</figcaption>
-        </figure>
-      </div>
-
-      <div class="note">
-        <p><strong>Why it happens.</strong> Perspective is set by the center of projection, meaning where the camera physically is. Up close, the distance from the lens to the nose is much smaller than the distance to the ears, so the nose projects much larger. Stepping back makes those distances nearly equal, and zooming just scales the whole image back up without changing the relative sizes.</p>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="part2">
-    <div class="wrap">
-      <div class="panel green">
-      <div class="sec-head"><svg viewBox="0 0 64 64" fill="none"><rect x="8" y="14" width="26" height="44" fill="#1f8a5b"/><rect x="36" y="28" width="20" height="30" fill="#1f8a5b" opacity=".6"/><rect x="14" y="22" width="5" height="5" fill="#fafaf7"/><rect x="23" y="22" width="5" height="5" fill="#fafaf7"/><rect x="14" y="33" width="5" height="5" fill="#fafaf7"/><rect x="23" y="33" width="5" height="5" fill="#fafaf7"/><rect x="14" y="44" width="5" height="5" fill="#fafaf7"/><rect x="23" y="44" width="5" height="5" fill="#fafaf7"/></svg><h2><span class="num">02</span>Architectural Perspective Compression</h2></div>
-      <p class="sub">The same idea in reverse. A building photographed from far away with zoom, then again after walking up to it with no zoom, keeping the building the same size in the frame.</p>
-
-      <div class="pair">
-        <figure class="landscape">
-          <img src="./media/building_zoom_1.jpg" alt="Building from far away, zoomed in">
-          <figcaption><strong>Far away, zoomed in</strong>The facade looks flattened. Foreground and background feel stacked together.</figcaption>
-        </figure>
-        <figure class="landscape">
-          <img src="./media/building_close_1.jpg" alt="Building from close up, no zoom">
-          <figcaption><strong>Walked up, no zoom</strong>Strong depth. Lines converge and the near side of the building looks much bigger than the far side.</figcaption>
-        </figure>
-      </div>
-
-      <div class="pair">
-        <figure class="landscape">
-          <img src="./media/building_zoom_2.jpg" alt="Second building from far away, zoomed in">
-          <figcaption><strong>Far away, zoomed in</strong>Compressed.</figcaption>
-        </figure>
-        <figure class="landscape">
-          <img src="./media/building_close_2.jpg" alt="Second building from close up, no zoom">
-          <figcaption><strong>Walked up, no zoom</strong>Exaggerated depth.</figcaption>
-        </figure>
-      </div>
-
-      <div class="note">
-        <p><strong>Why it happens.</strong> From far away, the ratio of distances between the near and far parts of the scene is close to 1, so they project at similar sizes and depth is compressed. Up close, that ratio is large, so near things balloon and the scene looks deep. A long focal length is often blamed for "compression", but the real cause is the distance the long lens lets you stand at.</p>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="part3">
-    <div class="wrap">
-      <div class="panel purple">
-      <div class="sec-head"><svg viewBox="0 0 64 64" fill="none"><rect x="8" y="26" width="48" height="30" rx="4" fill="#d9a41c"/><path d="M8 26l3-12 46 4-2 8z" fill="#d9a41c" opacity=".6"/><circle cx="32" cy="41" r="7" fill="#fafaf7"/><circle cx="32" cy="41" r="3" fill="#d9a41c"/></svg><h2><span class="num">03</span>The Dolly Zoom</h2></div>
-      <p class="sub">Hitchcock's "Vertigo" shot. The camera moves backward while zooming in, so the subject stays the same size while the background appears to expand behind it.</p>
-
-      <div class="gifbox">
-        <img src="./media/dolly_zoom.gif" alt="Dolly zoom animation">
-      </div>
-
-      <div class="note">
-        <p><strong>Why it happens.</strong> Zooming keeps the subject's size fixed as the camera pulls back, but the change in camera position changes the perspective. The background, which is much farther away, shrinks less than the subject would have, so relative to the subject it appears to grow and rush toward the viewer.</p>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <footer><div class="wrap"><a href="../index.html">← Back to portfolio</a></div></footer>
 </body>
 </html>
