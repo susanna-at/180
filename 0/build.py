@@ -23,11 +23,19 @@ DOLLY = MEDIA / "dolly"
 GIF_OUT = MEDIA / "dolly_zoom.gif"
 
 MAX_PHOTO_PX = 1600   # longest side for still photos
-GIF_PX = 640          # longest side for GIF frames
+GIF_PX = 440          # longest side for GIF frames
 FRAME_MS = 150        # time per GIF frame
-# Only use dolly stills whose name (without extension) falls in this range.
-# Set to None to use every image in the dolly folder.
-DOLLY_RANGE = ("IMG_5643", "IMG_5664")
+PAUSE_MS = 700        # hold at the end of each take before reversing / moving on
+# Each take is a (first, last) filename range (without extension). Each take plays
+# forward, pauses, plays backward, pauses, then the next take starts.
+# Set to None to treat every image in the dolly folder as one take.
+DOLLY_RUNS = [
+    ("IMG_5434", "IMG_5447"),
+    ("IMG_5522", "IMG_5533"),
+    ("IMG_5616", "IMG_5636"),
+    ("IMG_5643", "IMG_5664"),
+    ("IMG_5672", "IMG_5690"),
+]
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
@@ -66,33 +74,46 @@ def shrink_photos(folder: Path):
 
 
 def build_gif():
-    frames_src = sorted(
+    all_src = sorted(
         p for p in DOLLY.iterdir()
         if p.suffix.lower() in IMG_EXT and not p.name.startswith(".")
-        and (DOLLY_RANGE is None or DOLLY_RANGE[0] <= p.stem <= DOLLY_RANGE[1])
     )
-    if not frames_src:
+    if not all_src:
         print(f"  no images in {DOLLY} yet; skipping GIF")
         return
-    frames = []
-    for p in frames_src:
-        im = load(p)
-        im.thumbnail((GIF_PX, GIF_PX), Image.LANCZOS)
-        frames.append(im)
+    runs = DOLLY_RUNS or [(all_src[0].stem, all_src[-1].stem)]
+    cache = {}
+    def frame(p):
+        if p not in cache:
+            im = load(p)
+            im.thumbnail((GIF_PX, GIF_PX), Image.LANCZOS)
+            cache[p] = im
+        return cache[p]
+    takes = []
+    for a, b in runs:
+        take = [frame(p) for p in all_src if a <= p.stem <= b]
+        if take:
+            takes.append(take)
     # make all frames the same size (crop to the smallest)
-    w = min(f.size[0] for f in frames)
-    h = min(f.size[1] for f in frames)
-    frames = [ImageOps.fit(f, (w, h), Image.LANCZOS) for f in frames]
-    # play forward then backward so the loop is smooth
-    seq = frames + frames[-2:0:-1]
-    ms = FRAME_MS
-    seq = [f.quantize(colors=128, method=Image.Quantize.MEDIANCUT) for f in seq]
+    w = min(f.size[0] for t in takes for f in t)
+    h = min(f.size[1] for t in takes for f in t)
+    seq, durs = [], []
+    for take in takes:
+        fwd = [ImageOps.fit(f, (w, h), Image.LANCZOS) for f in take]
+        for f in fwd:                       # forward
+            seq.append(f); durs.append(FRAME_MS)
+        durs[-1] = PAUSE_MS                 # hold at far end
+        for f in fwd[-2::-1]:               # backward
+            seq.append(f); durs.append(FRAME_MS)
+        durs[-1] = PAUSE_MS                 # hold at near end
+    seq = [f.quantize(colors=96, method=Image.Quantize.MEDIANCUT) for f in seq]
     seq[0].save(
         GIF_OUT, save_all=True, append_images=seq[1:],
-        duration=ms, loop=0, optimize=True,
+        duration=durs, loop=0, optimize=True,
     )
-    print(f"  wrote {GIF_OUT.name}: {len(frames_src)} stills, {w}x{h}, "
-          f"{GIF_OUT.stat().st_size/1e6:.1f} MB")
+    n = sum(len(t) for t in takes)
+    print(f"  wrote {GIF_OUT.name}: {len(takes)} takes, {n} stills, {len(seq)} frames, "
+          f"{w}x{h}, {GIF_OUT.stat().st_size/1e6:.1f} MB")
 
 
 if __name__ == "__main__":

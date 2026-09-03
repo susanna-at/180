@@ -58,7 +58,7 @@ figure.wide img { aspect-ratio: 4 / 3; }
 figcaption { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 8px; }
 .pair + p { margin-top: 26px; }
 
-.gif img { display: block; width: 100%; max-width: 640px; height: auto;  background: rgba(255,255,255,.6); }
+.gif img { display: block; width: 100%; max-width: 480px; height: auto;  background: rgba(255,255,255,.6); }
 
 ul.projects { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
 ul.projects li {
