@@ -30,7 +30,7 @@ h1 { font-weight: 700; font-size: clamp(34px, 5vw, 50px); letter-spacing: -.025e
 h2 { font-weight: 700; font-size: 24px; letter-spacing: -.015em; margin: 0 0 4px; display: flex; align-items: center; gap: 14px; }
 h2::before {
   content: counter(sec); counter-increment: sec;
-  width: 32px; height: 32px; border-radius: 50%; flex: none;
+  width: 32px; height: 32px;  flex: none;
   display: grid; place-items: center; font-size: 14px; font-weight: 700;
   background: var(--ink); color: #fff;
 }
@@ -39,36 +39,36 @@ p { max-width: 620px; margin: 0 0 22px; }
 p.small { color: var(--muted); font-size: 15px; margin-bottom: 26px; }
 
 section {
-  padding: 40px 36px 36px; margin: 0 0 28px; border-radius: 24px;
+  padding: 40px 36px 36px; margin: 0 0 28px; 
 }
 section:nth-of-type(1) { background: var(--tint1); }
 section:nth-of-type(2) { background: var(--tint2); }
 section:nth-of-type(3) { background: var(--tint3); }
 section p:last-child { margin-bottom: 0; }
-@media (max-width: 640px) { section { padding: 28px 20px; border-radius: 18px; } }
+@media (max-width: 640px) { section { padding: 28px 20px;  } }
 
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 16px; }
 @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
 figure { margin: 0; }
 figure img {
   display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover;
-  background: rgba(255,255,255,.6); border-radius: 14px;
+  background: rgba(255,255,255,.6); 
 }
 figure.wide img { aspect-ratio: 4 / 3; }
 figcaption { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 8px; }
 .pair + p { margin-top: 26px; }
 
-.gif img { display: block; width: 100%; max-width: 640px; height: auto; border-radius: 14px; background: rgba(255,255,255,.6); }
+.gif img { display: block; width: 100%; max-width: 640px; height: auto;  background: rgba(255,255,255,.6); }
 
 ul.projects { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
 ul.projects li {
-  background: #fff; border-radius: 16px; padding: 20px 24px;
+  background: #fff;  padding: 20px 24px;
   display: flex; gap: 20px; align-items: center; font-weight: 600; font-size: 18px;
   transition: transform .15s;
 }
 ul.projects li:hover { transform: translateY(-2px); }
 ul.projects .n {
-  width: 32px; height: 32px; border-radius: 50%; flex: none;
+  width: 32px; height: 32px;  flex: none;
   display: grid; place-items: center; font-size: 14px; background: var(--accent); color: #fff;
 }
 ul.projects li.soon { color: #b5b2bd; font-weight: 500; }
