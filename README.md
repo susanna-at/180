@@ -1,6 +1,6 @@
 # CS180 portfolio
 
-Live site: https://<your_github_username>.github.io/cs180/
+Live site: https://susanna-at.github.io/180/
 
 ## Adding photos for Project 0
 1. Put photos in `0/media/` using the filenames listed in `0/media/README.md`.
