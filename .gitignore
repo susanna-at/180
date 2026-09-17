@@ -4,3 +4,4 @@ __pycache__/
 *.heic
 0/media/dolly/*
 !0/media/dolly/.gitkeep
+proj1/

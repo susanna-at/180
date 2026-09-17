@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project 1 — Colorizing the Prokudin-Gorskii Photo Collection</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>body { counter-reset: sec katexEqnNo mmlEqnNo; } /* KaTeX's css resets body counters */</style>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]})"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="../">Susanna Atanessian</a>
+      <span>CS180, Project 1</span>
+    </div>
+
+    <h1>Colorizing the Prokudin-Gorskii Photo Collection</h1>
+    <p class="sub">Aligning three filtered glass plate exposures into a single color photograph.</p>
+
+    <section>
+    <h2>Introduction</h2>
+    <p>The goal of this project was to reconstruct color photographs from the Prokudin-Gorskii glass plate collection. What I found especially exciting about this project is how far ahead of his time Prokudin-Gorskii was. Long before modern color photography became common, he was already thinking about color in a way that feels surprisingly close to a computer vision technique: capture the same scene through different color filters and then combine those measurements to reconstruct color.</p>
+    <p>Each digitized glass plate contains three grayscale exposures of the same scene taken through blue, green, and red filters, stacked vertically in the order B, G, R. At first, the three images look almost identical and completely grayscale, which makes it especially interesting that together they actually contain all the information needed to represent color.</p>
+    <p>My task was to separate the three channels, align them correctly, and combine them into a single RGB image. Since the exposures were taken separately, the channels are slightly shifted relative to each other. I used the blue channel as my reference and aligned the green and red channels to it before stacking the three channels into the final color image.</p>
+    </section>
+
+    <section>
+    <h2>Single-Scale Alignment</h2>
+    <p>I first implemented a simple exhaustive search for the smaller JPEG images. For every possible displacement within a search window of \([-15,15]\) pixels in both the x and y directions, I shifted the channel and measured how well it matched the blue reference image.</p>
+    <p>For the matching metric, I used Normalized Cross-Correlation, or NCC. NCC first subtracts the mean intensity from each image and normalizes it using its L2 norm. It then computes the dot product between the two normalized images:</p>
+    <div class="math">$$\text{NCC}(A,B)=\frac{(A-\bar A)\cdot(B-\bar B)}{\|A-\bar A\|_2\|B-\bar B\|_2}.$$</div>
+    <p>A higher NCC score means that the two images have more similar intensity patterns. This is useful for this problem because corresponding regions across different color channels do not necessarily have exactly the same brightness.</p>
+    <p>For every possible displacement, I calculated the NCC score and kept the displacement with the highest score.</p>
+    <p>I also ignored the outer 10% of each image while calculating the alignment score. The glass plates often contain black, white, or irregular borders that are not part of the actual scene. In addition, <code>np.roll</code> wraps pixels from one side of the image to the opposite side when applying a shift. Ignoring the outer region prevents these border artifacts from having too much influence on the alignment metric.</p>
+    </section>
+
+    <section>
+    <h2>Single-Scale Results</h2>
+    <div class="grid">
+      <figure><img src="./media/single_scale/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
+      <figure><img src="./media/single_scale/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
+      <figure><img src="./media/single_scale/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
+    </div>
+    <table>
+      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+      <tbody>
+        <tr><td>Cathedral</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
+        <tr><td>Monastery</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
+        <tr><td>Tobolsk</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
+      </tbody>
+    </table>
+    <p>The exhaustive search worked well for the low-resolution images because the required displacements were relatively small and could be found within the \([-15,15]\) search window.</p>
+    </section>
+
+    <section>
+    <h2>Multi-Scale Image Pyramid</h2>
+    <p>The same approach becomes much more expensive for the high-resolution TIFF images. At full resolution, the correct displacement can be tens or even hundreds of pixels away. Searching exhaustively over such a large range would require evaluating a huge number of possible shifts.</p>
+    <p>To make the search faster, I implemented a coarse-to-fine image pyramid.</p>
+    <p>At each pyramid level, I downsample both images by a factor of two using anti-aliasing. I continue shrinking the images until they are small enough that the displacement can be found using the original exhaustive search.</p>
+    <p>Suppose the displacement found at the coarse level is</p>
+    <div class="math">$$(d_y,d_x).$$</div>
+    <p>When moving back to an image that is twice as large, the corresponding displacement should be approximately</p>
+    <div class="math">$$(2d_y,2d_x).$$</div>
+    <p>I use this doubled displacement as the center of a smaller search window and refine the estimate at the higher resolution. This process continues until the algorithm reaches the original image resolution.</p>
+    <p>The overall process is therefore:</p>
+    <div class="math">$$\text{downsample}\rightarrow\text{find coarse displacement}\rightarrow\text{double displacement}\rightarrow\text{refine locally}.$$</div>
+    <p>This makes it possible to recover large displacements without performing an expensive exhaustive search over the entire full-resolution image.</p>
+    </section>
+
+    <section>
+    <h2>Multi-Scale Pyramid Results</h2>
+    <p>For the required baseline results, I used NCC on the original grayscale pixel values together with the multi-scale pyramid.</p>
+    <div class="grid">
+      <figure><img src="./media/pyramid/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
+      <figure><img src="./media/pyramid/church_out.jpg" alt="Church"><figcaption>Church</figcaption></figure>
+      <figure><img src="./media/pyramid/emir_out.jpg" alt="Emir"><figcaption>Emir</figcaption></figure>
+      <figure><img src="./media/pyramid/harvesters_out.jpg" alt="Harvesters"><figcaption>Harvesters</figcaption></figure>
+      <figure><img src="./media/pyramid/icon_out.jpg" alt="Icon"><figcaption>Icon</figcaption></figure>
+      <figure><img src="./media/pyramid/ilemselga_out.jpg" alt="Ilemselga"><figcaption>Ilemselga</figcaption></figure>
+      <figure><img src="./media/pyramid/melons_out.jpg" alt="Melons"><figcaption>Melons</figcaption></figure>
+      <figure><img src="./media/pyramid/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
+      <figure><img src="./media/pyramid/religous_painting_out.jpg" alt="Religious Painting"><figcaption>Religious Painting</figcaption></figure>
+      <figure><img src="./media/pyramid/self_portrait_out.jpg" alt="Self Portrait"><figcaption>Self Portrait</figcaption></figure>
+      <figure><img src="./media/pyramid/siren_out.jpg" alt="Siren"><figcaption>Siren</figcaption></figure>
+      <figure><img src="./media/pyramid/three_generations_out.jpg" alt="Three Generations"><figcaption>Three Generations</figcaption></figure>
+      <figure><img src="./media/pyramid/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
+      <figure><img src="./media/pyramid/wharf_out.jpg" alt="Wharf"><figcaption>Wharf</figcaption></figure>
+    </div>
+    <table>
+      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+      <tbody>
+        <tr><td>Cathedral</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Church</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Emir</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Harvesters</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Icon</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Ilemselga</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Melons</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Monastery</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Religious Painting</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Self Portrait</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Siren</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Three Generations</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Tobolsk</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Wharf</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+      </tbody>
+    </table>
+    <p>The pyramid greatly improved efficiency on the large images because the algorithm could first identify the approximate alignment at a very low resolution and then make increasingly small corrections as it moved back toward the original resolution.</p>
+    </section>
+
+    <section>
+    <h2>Why Some Images Are Harder to Align</h2>
+    <p>One part of this project that I found especially interesting was realizing that the three grayscale exposures are not actually expected to have the same brightness values.</p>
+    <p>Each exposure was taken through a different color filter. An object that strongly reflects red light may appear very bright in the red exposure while appearing much darker in the blue exposure. Those differences are exactly what eventually allow us to reconstruct the color of the object.</p>
+    <p>This also creates a problem for alignment. Even if the red and blue images are geometrically aligned, the same region of the scene may contain very different pixel intensities. NCC helps by removing overall brightness and scale differences, but for strongly colored objects the actual intensity structure across channels can still be quite different.</p>
+    <p>The Emir image is a particularly interesting example of this problem.</p>
+    </section>
+
+    <section>
+    <h2>Edge-Based Alignment</h2>
+    <p>To make the alignment less dependent on raw brightness, I experimented with aligning the channels using edges instead of the original pixel values.</p>
+    <p>For each grayscale image, I first calculated the horizontal and vertical brightness gradients:</p>
+    <div class="math">$$g_x,\qquad g_y.$$</div>
+    <p>I then computed the gradient magnitude at every pixel:</p>
+    <div class="math">$$E(x,y)=\sqrt{g_x(x,y)^2+g_y(x,y)^2}.$$</div>
+    <p>This produces another grayscale image where strong boundaries have large values and relatively uniform regions have values close to zero.</p>
+    <p>The motivation behind this approach is that the brightness of an object can change significantly between the red, green, and blue exposures, but the physical boundary of that object usually remains in the same location. A piece of clothing, for example, may appear much brighter through one filter than another, but the outline of the person's shoulder or hat still occurs at the same point in the scene.</p>
+    <p>Instead of asking whether two regions contain the same brightness values, edge-based alignment asks whether their structural boundaries occur in the same places.</p>
+    <p>I used the edge images only to determine the displacement. After finding the best shifts using NCC on the edge maps, I applied those shifts to the original grayscale red and green channels and then constructed the RGB image normally.</p>
+    <p>This allowed me to use structural information for alignment without changing the actual content of the final photograph.</p>
+    </section>
+
+    <section>
+    <h2>Raw-Pixel NCC vs. Edge-Based NCC</h2>
+    <div class="pair">
+      <div>
+        <div class="ph">Emir, raw-pixel NCC — coming soon</div>
+        <h3>Raw-Pixel NCC</h3>
+        <p class="small">Green offset: <code>[ ]</code><br>Red offset: <code>[ ]</code></p>
+      </div>
+      <div>
+        <div class="ph">Emir, edge-based NCC — coming soon</div>
+        <h3>Edge-Based NCC</h3>
+        <p class="small">Green offset: <code>[ ]</code><br>Red offset: <code>[ ]</code></p>
+      </div>
+    </div>
+    <p>For difficult images, edge-based matching can improve the alignment because it focuses more on shared scene structure and less on how bright a particular color appears through each filter.</p>
+    </section>
+
+    <section>
+    <h2>Additional Prokudin-Gorskii Images</h2>
+    <p>I also tested my algorithm on three additional images from the Prokudin-Gorskii collection.</p>
+    <div class="grid">
+      <div class="ph">Image 1 — coming soon</div>
+      <div class="ph">Image 2 — coming soon</div>
+      <div class="ph">Image 3 — coming soon</div>
+    </div>
+    <table>
+      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+      <tbody>
+        <tr><td><code>[IMAGE 1]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td><code>[IMAGE 2]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td><code>[IMAGE 3]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+      </tbody>
+    </table>
+    <p>These images were processed using the same alignment pipeline without manually tuning the parameters for each photograph.</p>
+    </section>
+
+    <section>
+    <h2>Conclusion</h2>
+    <p>I found this project especially cool because it changed the way I thought about what a color image actually represents. When looking at the original glass plate, I just saw three extremely similar grayscale photographs stacked on top of each other. It is surprising that once those three images are interpreted as separate red, green, and blue measurements and aligned correctly, they suddenly become a full-color photograph.</p>
+    <p>It was also really interesting to think about why the same object can have such different brightness values across the three exposures. Those differences come directly from the color filters and from how much red, green, or blue light different objects reflect. In a way, the differences that make the alignment problem harder are also exactly what contain the information needed to reconstruct color.</p>
+    <p>Exploring edge detection made this even more interesting. Instead of only comparing brightness values, I could use the locations where brightness changes and focus on the actual structure of the scene. This gave me another way of thinking about what information in an image is useful for matching.</p>
+    <p>Overall, it was really satisfying to see relatively simple computer vision ideas—RGB channels, similarity metrics, image pyramids, and gradients—come together to reconstruct photographs captured more than a century ago. Prokudin-Gorskii's approach already contained the basic idea of separating color into different measurements, and it was especially exciting to use modern computational techniques to finally put those measurements back together.</p>
+    </section>
+  </div>
+</body>
+</html>
