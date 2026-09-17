@@ -6,7 +6,14 @@
   <title>Project 1 — Colorizing the Prokudin-Gorskii Photo Collection</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <style>body { counter-reset: sec katexEqnNo mmlEqnNo; } /* KaTeX's css resets body counters */</style>
+  <style>
+    body { counter-reset: sec katexEqnNo mmlEqnNo; } /* KaTeX's css resets body counters */
+    @media print {
+      section { break-inside: auto; }  /* long sections may split across pages */
+      h2 { break-after: avoid; }
+      table, .ph { break-inside: avoid; }
+    }
+  </style>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]})"></script>
@@ -67,7 +74,7 @@
     <div class="math">$$(2d_y,2d_x).$$</div>
     <p>I use this doubled displacement as the center of a smaller search window and refine the estimate at the higher resolution. This process continues until the algorithm reaches the original image resolution.</p>
     <p>The overall process is therefore:</p>
-    <div class="math">$$\text{downsample}\rightarrow\text{find coarse displacement}\rightarrow\text{double displacement}\rightarrow\text{refine locally}.$$</div>
+    <div class="math">$$\begin{gathered}\text{downsample}\rightarrow\text{find coarse displacement}\\\rightarrow\text{double displacement}\rightarrow\text{refine locally}.\end{gathered}$$</div>
     <p>This makes it possible to recover large displacements without performing an expensive exhaustive search over the entire full-resolution image.</p>
     </section>
 
