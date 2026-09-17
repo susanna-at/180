@@ -90,9 +90,13 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: .9em; }
   background: rgba(255,255,255,.6); color: var(--muted); font-size: 13px; font-weight: 600;
 }
 
+.tablewrap { overflow-x: auto; margin: 0 0 22px; }
 table { border-collapse: collapse; margin: 0 0 22px; font-size: 15px; background: rgba(255,255,255,.6); }
 th, td { padding: 7px 16px; text-align: left; border-bottom: 1px solid rgba(0,0,0,.08); }
 th { font-weight: 600; }
+thead th { text-align: right; }
+thead th:first-child { text-align: left; vertical-align: bottom; }
+.tablewrap table { margin: 0; }
 td + td, th + th { text-align: right; }
 
 @media print {

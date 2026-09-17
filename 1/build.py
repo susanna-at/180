@@ -22,7 +22,7 @@ OUT = ROOT.parent / "proj1" / "out"
 
 MAX_PX = 1200         # longest side for result images
 # folders in proj1/out/ to publish (each becomes 1/media/<folder>/)
-FOLDERS = ["single_scale", "pyramid"]
+FOLDERS = ["single_scale_base", "pyramid_base", "my_examples_base", "pyramid"]
 
 
 def copy_folder(name: str):

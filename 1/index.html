@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <style>
     body { counter-reset: sec katexEqnNo mmlEqnNo; } /* KaTeX's css resets body counters */
+    .pair figure img { aspect-ratio: auto; }  /* show full results, no crop */
     @media print {
       section { break-inside: auto; }  /* long sections may split across pages */
       h2 { break-after: avoid; }
@@ -48,18 +49,19 @@
     <section>
     <h2>Single-Scale Results</h2>
     <div class="grid">
-      <figure><img src="./media/single_scale/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
-      <figure><img src="./media/single_scale/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
-      <figure><img src="./media/single_scale/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
+      <figure><img src="./media/single_scale_base/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
+      <figure><img src="./media/single_scale_base/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
+      <figure><img src="./media/single_scale_base/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
     </div>
-    <table>
-      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+    <div class="tablewrap"><table>
+      <thead><tr><th rowspan="2">Image</th><th colspan="2">Raw-pixel NCC</th><th colspan="2">Edge-based NCC</th></tr>
+        <tr><th>Green (x, y)</th><th>Red (x, y)</th><th>Green (x, y)</th><th>Red (x, y)</th></tr></thead>
       <tbody>
-        <tr><td>Cathedral</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
-        <tr><td>Monastery</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
-        <tr><td>Tobolsk</td><td><code>[G OFFSET]</code></td><td><code>[R OFFSET]</code></td></tr>
+        <tr><td>Cathedral</td><td><code>(2, 5)</code></td><td><code>(3, 12)</code></td><td><code>(2, 5)</code></td><td><code>(3, 12)</code></td></tr>
+        <tr><td>Monastery</td><td><code>(2, -3)</code></td><td><code>(2, 3)</code></td><td><code>(2, -3)</code></td><td><code>(2, 3)</code></td></tr>
+        <tr><td>Tobolsk</td><td><code>(3, 3)</code></td><td><code>(3, 6)</code></td><td><code>(2, 3)</code></td><td><code>(3, 6)</code></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>The exhaustive search worked well for the low-resolution images because the required displacements were relatively small and could be found within the \([-15,15]\) search window.</p>
     </section>
 
@@ -82,40 +84,41 @@
     <h2>Multi-Scale Pyramid Results</h2>
     <p>For the required baseline results, I used NCC on the original grayscale pixel values together with the multi-scale pyramid.</p>
     <div class="grid">
-      <figure><img src="./media/pyramid/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
-      <figure><img src="./media/pyramid/church_out.jpg" alt="Church"><figcaption>Church</figcaption></figure>
-      <figure><img src="./media/pyramid/emir_out.jpg" alt="Emir"><figcaption>Emir</figcaption></figure>
-      <figure><img src="./media/pyramid/harvesters_out.jpg" alt="Harvesters"><figcaption>Harvesters</figcaption></figure>
-      <figure><img src="./media/pyramid/icon_out.jpg" alt="Icon"><figcaption>Icon</figcaption></figure>
-      <figure><img src="./media/pyramid/ilemselga_out.jpg" alt="Ilemselga"><figcaption>Ilemselga</figcaption></figure>
-      <figure><img src="./media/pyramid/melons_out.jpg" alt="Melons"><figcaption>Melons</figcaption></figure>
-      <figure><img src="./media/pyramid/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
-      <figure><img src="./media/pyramid/religous_painting_out.jpg" alt="Religious Painting"><figcaption>Religious Painting</figcaption></figure>
-      <figure><img src="./media/pyramid/self_portrait_out.jpg" alt="Self Portrait"><figcaption>Self Portrait</figcaption></figure>
-      <figure><img src="./media/pyramid/siren_out.jpg" alt="Siren"><figcaption>Siren</figcaption></figure>
-      <figure><img src="./media/pyramid/three_generations_out.jpg" alt="Three Generations"><figcaption>Three Generations</figcaption></figure>
-      <figure><img src="./media/pyramid/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
-      <figure><img src="./media/pyramid/wharf_out.jpg" alt="Wharf"><figcaption>Wharf</figcaption></figure>
+      <figure><img src="./media/pyramid_base/cathedral_out.jpg" alt="Cathedral"><figcaption>Cathedral</figcaption></figure>
+      <figure><img src="./media/pyramid_base/church_out.jpg" alt="Church"><figcaption>Church</figcaption></figure>
+      <figure><img src="./media/pyramid_base/emir_out.jpg" alt="Emir"><figcaption>Emir</figcaption></figure>
+      <figure><img src="./media/pyramid_base/harvesters_out.jpg" alt="Harvesters"><figcaption>Harvesters</figcaption></figure>
+      <figure><img src="./media/pyramid_base/icon_out.jpg" alt="Icon"><figcaption>Icon</figcaption></figure>
+      <figure><img src="./media/pyramid_base/ilemselga_out.jpg" alt="Ilemselga"><figcaption>Ilemselga</figcaption></figure>
+      <figure><img src="./media/pyramid_base/melons_out.jpg" alt="Melons"><figcaption>Melons</figcaption></figure>
+      <figure><img src="./media/pyramid_base/monastery_out.jpg" alt="Monastery"><figcaption>Monastery</figcaption></figure>
+      <figure><img src="./media/pyramid_base/religous_painting_out.jpg" alt="Religious Painting"><figcaption>Religious Painting</figcaption></figure>
+      <figure><img src="./media/pyramid_base/self_portrait_out.jpg" alt="Self Portrait"><figcaption>Self Portrait</figcaption></figure>
+      <figure><img src="./media/pyramid_base/siren_out.jpg" alt="Siren"><figcaption>Siren</figcaption></figure>
+      <figure><img src="./media/pyramid_base/three_generations_out.jpg" alt="Three Generations"><figcaption>Three Generations</figcaption></figure>
+      <figure><img src="./media/pyramid_base/tobolsk_out.jpg" alt="Tobolsk"><figcaption>Tobolsk</figcaption></figure>
+      <figure><img src="./media/pyramid_base/wharf_out.jpg" alt="Wharf"><figcaption>Wharf</figcaption></figure>
     </div>
-    <table>
-      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+    <div class="tablewrap"><table>
+      <thead><tr><th rowspan="2">Image</th><th colspan="2">Raw-pixel NCC</th><th colspan="2">Edge-based NCC</th></tr>
+        <tr><th>Green (x, y)</th><th>Red (x, y)</th><th>Green (x, y)</th><th>Red (x, y)</th></tr></thead>
       <tbody>
-        <tr><td>Cathedral</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Church</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Emir</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Harvesters</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Icon</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Ilemselga</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Melons</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Monastery</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Religious Painting</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Self Portrait</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Siren</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Three Generations</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Tobolsk</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td>Wharf</td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>Cathedral</td><td><code>(2, 5)</code></td><td><code>(3, 12)</code></td><td><code>(2, 5)</code></td><td><code>(3, 12)</code></td></tr>
+        <tr><td>Church</td><td><code>(4, 25)</code></td><td><code>(-4, 58)</code></td><td><code>(4, 25)</code></td><td><code>(-4, 58)</code></td></tr>
+        <tr><td>Emir</td><td><code>(24, 49)</code></td><td><code>(-205, 141)</code></td><td><code>(24, 49)</code></td><td><code>(40, 107)</code></td></tr>
+        <tr><td>Harvesters</td><td><code>(17, 60)</code></td><td><code>(13, 124)</code></td><td><code>(17, 60)</code></td><td><code>(14, 124)</code></td></tr>
+        <tr><td>Icon</td><td><code>(17, 41)</code></td><td><code>(23, 89)</code></td><td><code>(17, 42)</code></td><td><code>(23, 90)</code></td></tr>
+        <tr><td>Ilemselga</td><td><code>(7, 40)</code></td><td><code>(11, 130)</code></td><td><code>(7, 40)</code></td><td><code>(11, 131)</code></td></tr>
+        <tr><td>Melons</td><td><code>(11, 82)</code></td><td><code>(13, 178)</code></td><td><code>(10, 80)</code></td><td><code>(13, 177)</code></td></tr>
+        <tr><td>Monastery</td><td><code>(2, -3)</code></td><td><code>(2, 3)</code></td><td><code>(2, -3)</code></td><td><code>(2, 3)</code></td></tr>
+        <tr><td>Religious Painting</td><td><code>(3, 28)</code></td><td><code>(7, 68)</code></td><td><code>(6, 30)</code></td><td><code>(6, 70)</code></td></tr>
+        <tr><td>Self Portrait</td><td><code>(29, 79)</code></td><td><code>(37, 176)</code></td><td><code>(29, 78)</code></td><td><code>(37, 175)</code></td></tr>
+        <tr><td>Siren</td><td><code>(-6, 49)</code></td><td><code>(-25, 96)</code></td><td><code>(-6, 49)</code></td><td><code>(-24, 96)</code></td></tr>
+        <tr><td>Three Generations</td><td><code>(14, 53)</code></td><td><code>(11, 112)</code></td><td><code>(12, 54)</code></td><td><code>(9, 111)</code></td></tr>
+        <tr><td>Tobolsk</td><td><code>(3, 3)</code></td><td><code>(3, 6)</code></td><td><code>(2, 3)</code></td><td><code>(3, 6)</code></td></tr>
+        <tr><td>Wharf</td><td><code>(-7, 15)</code></td><td><code>(-16, 83)</code></td><td><code>(-7, 15)</code></td><td><code>(-16, 83)</code></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>The pyramid greatly improved efficiency on the large images because the algorithm could first identify the approximate alignment at a very low resolution and then make increasingly small corrections as it moved back toward the original resolution.</p>
     </section>
 
@@ -145,14 +148,14 @@
     <h2>Raw-Pixel NCC vs. Edge-Based NCC</h2>
     <div class="pair">
       <div>
-        <div class="ph">Emir, raw-pixel NCC — coming soon</div>
+        <figure><img src="./media/pyramid_base/emir_out.jpg" alt="Emir, raw-pixel NCC"></figure>
         <h3>Raw-Pixel NCC</h3>
-        <p class="small">Green offset: <code>[ ]</code><br>Red offset: <code>[ ]</code></p>
+        <p class="small">Green offset: <code>(24, 49)</code><br>Red offset: <code>(-205, 141)</code></p>
       </div>
       <div>
-        <div class="ph">Emir, edge-based NCC — coming soon</div>
+        <figure><img src="./media/pyramid/emir_out.jpg" alt="Emir, edge-based NCC"></figure>
         <h3>Edge-Based NCC</h3>
-        <p class="small">Green offset: <code>[ ]</code><br>Red offset: <code>[ ]</code></p>
+        <p class="small">Green offset: <code>(24, 49)</code><br>Red offset: <code>(40, 107)</code></p>
       </div>
     </div>
     <p>For difficult images, edge-based matching can improve the alignment because it focuses more on shared scene structure and less on how bright a particular color appears through each filter.</p>
@@ -160,20 +163,25 @@
 
     <section>
     <h2>Additional Prokudin-Gorskii Images</h2>
-    <p>I also tested my algorithm on three additional images from the Prokudin-Gorskii collection.</p>
+    <p>I also tested my algorithm on five additional images from the Prokudin-Gorskii collection.</p>
     <div class="grid">
-      <div class="ph">Image 1 — coming soon</div>
-      <div class="ph">Image 2 — coming soon</div>
-      <div class="ph">Image 3 — coming soon</div>
+      <figure><img src="./media/my_examples_base/service-pnp-prok-00000-00018v_out.jpg" alt="00000-00018v"><figcaption>00000-00018v</figcaption></figure>
+      <figure><img src="./media/my_examples_base/service-pnp-prok-00000-00082v_out.jpg" alt="00000-00082v"><figcaption>00000-00082v</figcaption></figure>
+      <figure><img src="./media/my_examples_base/service-pnp-prok-00000-00088v_out.jpg" alt="00000-00088v"><figcaption>00000-00088v</figcaption></figure>
+      <figure><img src="./media/my_examples_base/service-pnp-prok-00200-00205v_out.jpg" alt="00200-00205v"><figcaption>00200-00205v</figcaption></figure>
+      <figure><img src="./media/my_examples_base/service-pnp-prok-00300-00364v_out.jpg" alt="00300-00364v"><figcaption>00300-00364v</figcaption></figure>
     </div>
-    <table>
-      <thead><tr><th>Image</th><th>Green Offset (x, y)</th><th>Red Offset (x, y)</th></tr></thead>
+    <div class="tablewrap"><table>
+      <thead><tr><th rowspan="2">Image</th><th colspan="2">Raw-pixel NCC</th><th colspan="2">Edge-based NCC</th></tr>
+        <tr><th>Green (x, y)</th><th>Red (x, y)</th><th>Green (x, y)</th><th>Red (x, y)</th></tr></thead>
       <tbody>
-        <tr><td><code>[IMAGE 1]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td><code>[IMAGE 2]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
-        <tr><td><code>[IMAGE 3]</code></td><td><code>[ ]</code></td><td><code>[ ]</code></td></tr>
+        <tr><td>00000-00018v</td><td><code>(3, 6)</code></td><td><code>(5, 14)</code></td><td><code>(3, 6)</code></td><td><code>(5, 14)</code></td></tr>
+        <tr><td>00000-00082v</td><td><code>(1, 3)</code></td><td><code>(1, 8)</code></td><td><code>(1, 3)</code></td><td><code>(1, 8)</code></td></tr>
+        <tr><td>00000-00088v</td><td><code>(3, 3)</code></td><td><code>(5, 4)</code></td><td><code>(3, 3)</code></td><td><code>(5, 4)</code></td></tr>
+        <tr><td>00200-00205v</td><td><code>(2, 5)</code></td><td><code>(4, 11)</code></td><td><code>(2, 5)</code></td><td><code>(4, 11)</code></td></tr>
+        <tr><td>00300-00364v</td><td><code>(2, 4)</code></td><td><code>(3, 9)</code></td><td><code>(2, 4)</code></td><td><code>(3, 9)</code></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>These images were processed using the same alignment pipeline without manually tuning the parameters for each photograph.</p>
     </section>
 
